@@ -1,0 +1,13 @@
+ALTERAR NOME DO ESTADO PARA AMOSTRAGEM;
+ADICIONAR NA ENTITY machine_state:
+    digito_1, digito_2, digito_3: out std_logic_vector (6 downto 0);
+    [E DE SIGNALS]
+    s_digito_1: out std_logic_vector (7 downto 0);
+TROCAR s_display POR s_data_display_bin;
+
+disp: display port map(s_data_display_bin (7 downto 0), s_display(7 downto 0)));
+
+USAR COMANDO ROL E NOT PARA s_display:
+
+ s_digito_1 <= s_display(6 downto 0);
+ digito_1 <= not(s_digito_1);
