@@ -3,36 +3,47 @@ use ieee.std_logic_1164.all;
 
 entity shift_register is 
   port (  
-    clk      : in std_logic;
-    load     : in std_logic;  
-    rst      : in std_logic;  
-    data_in  : in std_logic;  
-    data_out : out std_logic;
-    q: out std_logic_vector (11 downto 0)
+    clk    : in std_logic; 
+    reset  : in std_logic;
+    enable_count: in std_logic;
+	  enable_sm : in std_logic;
+    data_in: in std_logic; 
+    q: out std_logic_vector (7 downto 0)
   );  
 end shift_register;
 
 architecture shift_register_Arch of shift_register is  
-  signal data : std_logic_vector (11 downto 0);  
-  begin  
-  q <= data;  
-  variaton: process(clk, rst)  
+  signal s_data: std_logic_vector (7 downto 0);
+  signal o_load: std_logic;
+  
+ -- component clock_counter is
+  --  port (
+   --   clk   : in  std_logic;
+    --  reset : in  std_logic;
+   --   clk_out:out std_logic;
+   --   enable: out std_logic
+   -- );
+  --end component;
+ 
+  begin
+  --clock_signal: clock_counter port map(clk, reset, s_clk, s_load);
+  
+  variaton: process(o_load, reset)  
     begin  
-    if (rst = '1') then  
-        data <= (others=>'1');  
-    elsif rising_edge(clk) and load = '1' then  
-        data(0) <= data_in;  
-        data(1) <= data(0);  
-        data(2) <= data(1);  
-        data(3) <= data(2);
-        data(4) <= data(3);  
-        data(5) <= data(4);  
-        data(6) <= data(5);  
-        data(7) <= data(6);
-        data(7) <= data(7);  
-        data(9) <= data(8);  
-        data(10) <= data(9);  
-        data(11) <= data(10);  
-    end if;
+      if (reset = '0') then  
+        s_data <= (others=>'0');  
+      elsif rising_edge(o_load) then  
+        s_data(0) <= data_in;  
+        s_data(1) <= s_data(0);  
+        s_data(2) <= s_data(1);  
+        s_data(3) <= s_data(2);
+        s_data(4) <= s_data(3);  
+        s_data(5) <= s_data(4);  
+        s_data(6) <= s_data(5);  
+        s_data(7) <= s_data(6);       
+      end if;
   end process;
+
+  o_load <= enable_count and enable_sm; -- o reg só carrega bit se o contador 
+	q <= s_data;                         -- e a máquina de estados permitirem
 end architecture;
